@@ -1,18 +1,69 @@
-function calculateAge() {
-    const birthdate = new Date(document.getElementById('birthdate').value);
-    const today = new Date();
+// Get elements
+const result = document.getElementById('result');
+const buttons = document.querySelectorAll('.btn');
+
+// Variables
+let currentInput = '';
+let shouldResetScreen = false;
+
+// Add event listeners to buttons
+buttons.forEach(button => {
+    button.addEventListener('click', () => {
+        const buttonValue = button.textContent;
+        
+        if (button.classList.contains('number')) {
+            handleNumber(buttonValue);
+        } else if (buttonValue === 'clr') {
+            clearDisplay();
+        } else if (buttonValue === 'DEL') {
+            deleteLastChar();
+        } else if (['+', '-', '*', '/', '%', '.'].includes(buttonValue)) {
+            handleOperator(buttonValue);
+        } else if (buttonValue === '=') {
+            calculate();
+        }
+    });
+});
+
+function handleNumber(number) {
+    if (shouldResetScreen) {
+        result.textContent = '';
+        shouldResetScreen = false;
+    }
     
-    if (isNaN(birthdate)) {
-        document.getElementById('result').textContent = 'Please enter a valid date';
-        return;
+    if (result.textContent === '0') {
+        result.textContent = number;
+    } else {
+        result.textContent += number;
     }
+    
+    currentInput = result.textContent;
+}
 
-    let age = today.getFullYear() - birthdate.getFullYear();
-    const monthDiff = today.getMonth() - birthdate.getMonth();
-
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
-        age--;
+function handleOperator(operator) {
+    if (currentInput !== '') {
+        result.textContent += operator;
+        currentInput = result.textContent;
+        shouldResetScreen = false;
     }
+}
 
-    document.getElementById('result').textContent = `Your age is ${age} years`;
+function clearDisplay() {
+    result.textContent = '0';
+    currentInput = '';
+}
+
+function deleteLastChar() {
+    if (result.textContent.length > 1) {
+        result.textContent = result.textContent.slice(0, -1);
+    } else {
+        result.textContent = '0';
+    }
+    currentInput = result.textContent;
+}
+
+function calculate() { 
+    result.textContent = 'Hello World!';
+    currentInput = '';
+    shouldResetScreen = true;
 }
